@@ -82,8 +82,15 @@ export const loadFBXModel = (scene, path, position, scale) => {
  * @param {Array} mixers - Array of animation mixers.
  * @param {THREE.Clock} clock - Clock for delta time.
  */
-export const setupAnimationLoop = (test, mixers, clock) => {
-  requestAnimationFrame(() => setupAnimationLoop(test, mixers, clock));
+//
+// Sets up a recursive animation loop and stores the current frame id so it can
+// be cancelled later. The `frameIdRef` object should have an `id` property that
+// will be updated with the latest requestAnimationFrame identifier.
+//
+export const setupAnimationLoop = (test, mixers, clock, frameIdRef) => {
+  frameIdRef.id = requestAnimationFrame(() =>
+    setupAnimationLoop(test, mixers, clock, frameIdRef)
+  );
   const delta = clock.getDelta();
   mixers.forEach((mixer) => mixer.update(delta));
   test.render();
