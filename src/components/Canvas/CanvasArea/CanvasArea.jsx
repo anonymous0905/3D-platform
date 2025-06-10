@@ -17,10 +17,17 @@ export default function CanvasArea({ latestModel,error }) {
 
     const newMixers = [];
     const clock = new THREE.Clock();
-    setupAnimationLoop(test, newMixers, clock);
+
+    const frameRef = { id: null };
+    setupAnimationLoop(test, newMixers, clock, frameRef);
 
     setSceneInstance(test);
     setMixers(newMixers);
+
+    return () => {
+      cancelAnimationFrame(frameRef.id);
+      test.dispose();
+    };
   }, []);
 
 
